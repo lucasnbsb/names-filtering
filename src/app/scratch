@@ -1,0 +1,35 @@
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { UserService } from './shared/services/user.service';
+import { Observable } from 'rxjs';
+import { AsyncPipe, JsonPipe } from '@angular/common';
+
+@Component({
+  selector: 'app-root',
+  imports: [ JsonPipe, AsyncPipe],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent implements OnInit{
+  usersService = inject(UserService);
+  client = inject(HttpClient)
+
+
+  users$: Observable<any> | undefined = undefined
+  constructor(){
+    this.usersService.getUsers().subscribe((res) => {
+      alert(res)
+      console.log(res)
+    })
+    console.log('aaaaaaa')
+  }
+
+  ngOnInit(): void {
+    this.users$ = this.usersService.getUsers();
+
+    this.client.get('https://jsonplaceholder.typicode.com/users').subscribe((res) => {
+      console.log(res)
+    })
+  }
+}
